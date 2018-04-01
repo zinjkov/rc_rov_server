@@ -13,9 +13,9 @@ namespace rov {
     class message_io;
 
     using io_service_ptr = std::shared_ptr<boost::asio::io_service>;
-    using event_ptr = std::shared_ptr<event_t>;
+//    using event_ptr = std::shared_ptr<event_t>;
     using event_handler = std::function<void(const std::shared_ptr<event_t> &)>;
-    using event_id_t = std::size_t;
+//    using event_id_t = std::size_t;
 
     using on_read_callback = std::function<void(const message_io &)>;
     using on_open_callback = std::function<void()>;
