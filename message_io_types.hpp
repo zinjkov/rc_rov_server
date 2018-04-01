@@ -35,9 +35,11 @@ namespace rov {
             payload_type m_payload;
         };
 
-        using imu_message = base_message<std::vector<std::uint8_t>>;
+        using imu = base_message<std::vector<std::uint8_t>>;
 
-        using connectivity_message = base_message<std::vector<std::uint8_t>>;
+        using connectivity = base_message<std::vector<std::uint8_t>>;
+
+        using hardware = base_message<std::vector<std::uint8_t>>;
 
 
     }
