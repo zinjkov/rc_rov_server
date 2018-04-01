@@ -19,6 +19,7 @@ rov::imu_service::imu_service(const std::shared_ptr<rov::service_io> &driver_,
     subscribe_to_events();
     m_service->register_on_read_handler(std::bind(&imu_service::on_read, this, std::placeholders::_1));
     m_service->start();
+    imu_data_decode_init();
 }
 
 rov::imu_service::~imu_service() {
@@ -26,14 +27,14 @@ rov::imu_service::~imu_service() {
 }
 
 void rov::imu_service::on_read(const rov::message_io &msg) {
-    packet_decoding(msg.get<message_io_types::imu_message>().get());
-    event_ptr ev;
-    ev->set(event_type::imu_data_recieved, get_angles());
-    post(ev);
+    packet_decoding(msg.get<message_io_types::imu>().get());
+    post(event_t::make_event_ptr(event_type::imu_data_recieved, get_angles()));
 }
 
 void rov::imu_service::subscribe_to_events() {
-    subscribe(event_type::imu_config, std::bind(&imu_service::on_imu_config_event, this, std::placeholders::_1));
+    subscribe(event_type::imu_config,
+              std::bind(&imu_service::on_imu_config_event,
+                        this, std::placeholders::_1));
 }
 
 void rov::imu_service::on_imu_config_event(const rov::event_ptr &ev) {

@@ -11,7 +11,7 @@
 
 rov::imu_io::imu_io(const rov::io_service_ptr &service) :
     service_io(service),
-    m_driver(std::make_shared<posix_serial>("port")),
+    m_driver(std::make_shared<posix_serial>("/dev/ttyUSB0")),
     m_transmit_timer(*service)
 {
 
@@ -25,12 +25,15 @@ bool rov::imu_io::is_connected() {
 void rov::imu_io::read_driver(const boost::system::error_code &e) {
     if (e){
         //TODO SEE WHAT WRONG
+        return;
     }
+
     std::vector<uint8_t> buffer;
     m_driver->read_bytes(buffer);
+
     if (buffer.size() != 0){
         try {
-            m_on_read_callback(message_io_types::create_msg_io<message_io_types::imu_message>(buffer));
+            m_on_read_callback(message_io_types::create_msg_io<message_io_types::imu>(buffer));
         }
         catch (const std::exception &e) {
             std::cerr << e.what() << std::endl;

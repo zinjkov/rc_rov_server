@@ -23,11 +23,13 @@ namespace rov {
 
     private:
         void subscribe_to_events();
+
         void on_read(const message_io &msg) override;
 
         void on_imu_config_event(const event_ptr &ev);
 
         void packet_decoding(const std::vector<std::uint8_t> &bytes);
+
         eular_angles get_angles();
 
     };
