@@ -34,7 +34,7 @@ rov::connectivity_io::~connectivity_io() {
 }
 
 void rov::connectivity_io::write(const rov::message_io &write_data) {
-    message_io_types::connectivity_message msg = write_data.get<message_io_types::connectivity_message>();
+    auto msg = write_data.get<message_io_types::connectivity>();
     for(auto & session : m_sessions) {
         session.second->write(msg.get());
     }
@@ -54,7 +54,7 @@ void rov::connectivity_io::start() {
 }
 
 void rov::connectivity_io::on_read(const std::vector<std::uint8_t> &data_recieved) {
-    m_on_read_callback(message_io_types::create_msg_io<message_io_types::connectivity_message>(data_recieved));
+    m_on_read_callback(message_io_types::create_msg_io<message_io_types::connectivity>(data_recieved));
 }
 
 void rov::connectivity_io::stop() {
@@ -63,4 +63,5 @@ void rov::connectivity_io::stop() {
 
 void rov::connectivity_io::on_disconnect(rov::session *ptr) {
     m_sessions.erase(ptr->get_id());
+    std::cout << "client with id: " << ptr->get_id() << " disconnected" << std::endl;
 }

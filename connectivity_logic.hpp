@@ -19,6 +19,9 @@ namespace rov {
 
     private:
         void on_transmit_request(const event_ptr &ev);
+        void on_telimetry_updated(const event_ptr &ev);
+
+        void subscibe_to_event();
 
         void init_message_mapping();
 
