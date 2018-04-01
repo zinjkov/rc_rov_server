@@ -32,10 +32,26 @@ namespace rov_types {
             packet_size = 7
         };
 
-        std::uint8_t axis_x = 0;
-        std::uint8_t axis_y = 0;
-        std::uint8_t axis_z = 0;
-        std::uint8_t axis_w = 0;
+        std::int8_t axis_x = 0;
+        std::int8_t axis_y = 0;
+        std::int8_t axis_z = 0;
+        std::int8_t axis_w = 0;
+
+        virtual std::vector<std::uint8_t> serialize() override final;
+
+        virtual error_code deserialize(const std::vector<std::uint8_t> &input) override final;
+    };
+
+
+    struct rov_hardware_control : serializable {
+        enum meta: uint8_t{
+            packet_id = 0x1A,
+            payload_size = 9,
+            packet_size = 11
+        };
+
+        std::int8_t horizontal_power[4];
+        std::int8_t vertical_power[4];
 
         virtual std::vector<std::uint8_t> serialize() override final;
 

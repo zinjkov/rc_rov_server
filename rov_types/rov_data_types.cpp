@@ -88,3 +88,52 @@ rov_types::serializable::error_code rov_types::rov_control::deserialize(const st
 
     return success;
 }
+
+std::vector<uint8_t> rov_types::rov_hardware_control::serialize() {
+    binary_stream bs;
+    bs << meta::packet_id;
+
+    for(auto & p : horizontal_power) {
+        bs << p;
+    }
+    for(auto & p : vertical_power) {
+        bs << p;
+    }
+
+    bs << crc::calculateCRC(bs.data().data(), meta::payload_size);
+    return bs.data();
+}
+
+rov_types::serializable::error_code rov_types::rov_hardware_control::deserialize(const std::vector<uint8_t> &input) {
+    binary_stream bs(input);
+    std::uint8_t packet_id;
+
+    if (input.size() < meta::packet_size){
+        return error_code::size_less;
+    }
+
+    bs >> packet_id;
+    if (packet_id != meta::packet_id) {
+        return error_code::wrong_id;
+    }
+
+    for(auto & p : horizontal_power) {
+        bs >> p;
+    }
+    for(auto & p : vertical_power) {
+        bs >> p;
+    }
+
+    std::int16_t current_crc = 0;
+    bs >> current_crc;
+
+    if (current_crc != crc::calculateCRC(input.data(), meta::payload_size)) {
+        return error_code::crc_mismatch;
+    }
+
+    if (input.size() > meta::packet_size){
+        return error_code::success_size_greater;
+    }
+
+    return success;
+}
