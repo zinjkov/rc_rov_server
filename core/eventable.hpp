@@ -16,6 +16,7 @@ namespace rov {
     public:
         eventable(const std::shared_ptr<event_bus> &event_bus);
         virtual ~eventable();
+
     protected:
         void subscribe(event_id_t event_id, event_handler handler);
         void call_registered_handlers(const event_ptr &ev);

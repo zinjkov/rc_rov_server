@@ -5,15 +5,18 @@
 #ifndef RC_ROV_SERVER_EVENTS_TYPES_HPP
 #define RC_ROV_SERVER_EVENTS_TYPES_HPP
 
-#include "../name_allias.hpp"
+
 namespace rov {
+    using event_id_t = std::size_t;
     struct event_type {
-        enum : event_id_t {
+        enum event_id : event_id_t {
             imu_config,
             imu_data_recieved,
 
             connectivity_transmit_request,
-            rov_control_received
+            rov_control_received,
+
+            telimetry_updated
         };
     };
 
