@@ -30,8 +30,11 @@ namespace rov {
     private:
         std::shared_ptr<serial::Serial> m_driver;
         boost::asio::deadline_timer m_transmit_timer;
+        boost::asio::deadline_timer m_recvieve_timer;
+        std::vector<std::uint8_t> m_write_buffer;
 
         void read_driver(const boost::system::error_code &e);
+        void write_driver(const boost::system::error_code &e);
 
 
     };

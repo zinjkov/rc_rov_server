@@ -33,7 +33,7 @@ namespace rov {
 
     void connectivity_logic::init_message_mapping() {
         using namespace rov_types;
-        m_packet_handler[rov_control::meta::packet_id] =
+        m_packet_handler[rov_control::meta().packet_id] =
                 std::bind(&connectivity_logic::on_receive_control, this, std::placeholders::_1);
     }
 

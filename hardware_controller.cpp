@@ -41,7 +41,8 @@ void rov::hardware_controller::on_telimetry_updated(const rov::event_ptr &event)
 }
 
 void rov::hardware_controller::on_control_updated(const rov::event_ptr &event) {
-
+    m_control = event->get<rov_types::rov_control>();
+    emit_control();
 }
 
 void rov::hardware_controller::emit_control() {
@@ -52,18 +53,26 @@ void rov::hardware_controller::emit_control() {
     m_regulators.apply_horizontal(rhc, m_control, m_telimetry, m_config);
     m_regulators.apply_vertical(rhc, m_control, m_telimetry, m_config);
 
-    std::cout << "horizontal_power = { ";
-    for (auto p : rhc.horizontal_power) {
-        std::cout << (int)p << ",\t";
-    }
-    std::cout << "}" << std::endl;
+    rhc.manipulator_open_close = m_control.manipulator_open_close;
+    rhc.manipulator_rotate = m_control.manipulator_rotate;
 
-    std::cout << "vertical_power =   { ";
-    for (auto p : rhc.vertical_power) {
-        std::cout << (int)p << ",\t";
-    }
-    std::cout << "}" << std::endl;
+    static int f = 0;
+    if (f++ < 700) {
+        f = 0;
+        std::cout << "horizontal_power = { ";
+        for (auto p : rhc.horizontal_power) {
+            std::cout << (int)p << ",\t";
+        }
+        std::cout << "}" << std::endl;
 
+        std::cout << "vertical_power =   { ";
+        for (auto p : rhc.vertical_power) {
+            std::cout << (int)p << ",\t";
+        }
+        std::cout << "}" << std::endl;
+        std::cout << "man rot " << (int)rhc.manipulator_rotate << "\t" << "man open "
+                  << (int)rhc.manipulator_open_close << std::endl;
+    }
     m_service->write(message_io_types::create_msg_io<message_io_types::hardware>(rhc.serialize()));
 }
 
@@ -80,7 +89,11 @@ void rov::hardware_controller::update_config() {
 }
 
 void rov::hardware_controller::on_read(const rov::message_io &msg) {
-    std::cout << "hardware_controller::on_read" << std::endl;
+    auto m = msg.get<message_io_types::hardware>().get();
+    std::string recv_str;
+    recv_str.resize(m.size());
+    std::copy(m.begin(), std::end(m), std::begin(recv_str));
+    std::cout << "hardware_controller::on_read " << recv_str << std::endl;
 
 }
 

@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.0)
 project(rc_rov_server)
 
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -Wall")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -Wall -O3")
 
 find_package(Boost COMPONENTS system filesystem REQUIRED)
 if (Boost_FOUND)
