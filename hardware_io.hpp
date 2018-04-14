@@ -32,10 +32,12 @@ namespace rov {
         boost::asio::deadline_timer m_transmit_timer;
         boost::asio::deadline_timer m_recvieve_timer;
         std::vector<std::uint8_t> m_write_buffer;
+        bool m_write_updated;
 
         void read_driver(const boost::system::error_code &e);
         void write_driver(const boost::system::error_code &e);
-
+        void restart_write();
+        void restart_read();
 
     };
 }

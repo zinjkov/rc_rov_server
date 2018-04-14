@@ -39,7 +39,7 @@ namespace rov {
         void constrain_thruster(rov_types::rov_hardware_control &thruster);
         void constrain_horizontal(rov_types::rov_hardware_control &thruster);
         void constrain_vertical(rov_types::rov_hardware_control &thruster);
-        std::int8_t constrain(std::int8_t p);
+        std::int8_t constrain(int p);
     };
 }
 

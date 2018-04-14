@@ -17,7 +17,7 @@ namespace rov {
         constrain_vertical(thruster);
     }
 
-    std::int8_t basic_regulator::constrain(std::int8_t p) {
+    std::int8_t basic_regulator::constrain(int p) {
         if (p > 100) p = 100;
         if (p < -100) p = -100;
         return p;

@@ -17,7 +17,7 @@ inline void sleepFor(long long int time) {
 }
 
 int main() {
-    rov::io_service_ptr io_service = std::make_shared<boost::asio::io_service>(103);
+    rov::io_service_ptr io_service = std::make_shared<boost::asio::io_service>(3);
 
     std::shared_ptr<rov::event_bus> event_bus_ = std::make_shared<rov::event_bus>(io_service);
 

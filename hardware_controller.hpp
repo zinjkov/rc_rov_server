@@ -32,7 +32,7 @@ namespace rov {
         regulator_sequence m_regulators;
         basic_regulator::regulator_config m_config;
 
-        std::map<uint8_t, std::function<rov_types::serializable::error_code(const std::vector<std::uint8_t> &)>> m_packet_handler;
+        std::map<uint8_t, std::function<rov_types::serializable::error_code (const std::vector<std::uint8_t>)>> m_packet_handler;
     };
 }
 

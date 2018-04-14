@@ -41,7 +41,7 @@ namespace rov {
     void connectivity_logic::packet_handling(const std::vector<std::uint8_t> &packet) {
         try {
             using namespace rov_types;
-            std::cout << "packet handling with id " << (int)packet[0] << " " << packet.size() << std::endl;
+            //std::cout << "packet handling with id " << (int)packet[0] << " " << packet.size() << std::endl;
             serializable::error_code err = m_packet_handler[packet[0]](packet);
             if (err == serializable::error_code::success_size_greater){
                 std::cout << "serializable::error_code::success_size_greater" << std::endl;
@@ -74,7 +74,7 @@ namespace rov {
         rov_types::rov_control rc;
         rov_types::serializable::error_code err = rc.deserialize(packet);
         if (rov_types::serializable::check_for_success(err)) {
-            std::cout << (int)rc.axis_x << " " <<  (int)rc.axis_y << " " <<  (int)rc.axis_z << " " << (int)rc.axis_w << std::endl;
+            //std::cout << (int)rc.axis_x << " " <<  (int)rc.axis_y << " " <<  (int)rc.axis_z << " " << (int)rc.axis_w << std::endl;
             post(event_t::make_event_ptr(event_type::rov_control_received, rc));
         }
         return err;

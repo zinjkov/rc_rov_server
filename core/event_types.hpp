@@ -16,7 +16,8 @@ namespace rov {
             connectivity_transmit_request,
             rov_control_received,
 
-            telimetry_updated
+            telimetry_updated,
+            hardware_telemetry_updated
         };
     };
 

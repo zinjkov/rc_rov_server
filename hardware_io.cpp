@@ -18,7 +18,8 @@ rov::hardware_io::hardware_io(const rov::io_service_ptr &service) :
         m_driver(std::make_shared<serial::Serial>("/dev/ttyACM0", 115200,
                                                   serial::Timeout(serial::Timeout::simpleTimeout(10)))),
         m_transmit_timer(*service),
-        m_recvieve_timer(*service)
+        m_recvieve_timer(*service),
+        m_write_updated(false)
 {
     sleepFor(1000);
     start();
@@ -33,14 +34,12 @@ void rov::hardware_io::write(const rov::message_io &write_data) {
         return;
     }
     m_write_buffer = write_data.get<message_io_types::hardware>().get();
+    m_write_updated = true;
 }
 
 void rov::hardware_io::start() {
-    m_recvieve_timer.expires_from_now(boost::posix_time::milliseconds(20));
-    m_recvieve_timer.async_wait(boost::bind(&hardware_io::read_driver, this, boost::asio::placeholders::error));
-
-    m_transmit_timer.expires_from_now(boost::posix_time::milliseconds(20));
-    m_transmit_timer.async_wait(boost::bind(&hardware_io::write_driver, this, boost::asio::placeholders::error));
+    restart_read();
+    restart_write();
 }
 
 void rov::hardware_io::stop() {
@@ -73,7 +72,7 @@ void rov::hardware_io::read_driver(const boost::system::error_code &e) {
             std::cerr << e.what() << std::endl;
         }
     }
-    start();
+    restart_read();
 
 }
 
@@ -85,8 +84,20 @@ void rov::hardware_io::write_driver(const boost::system::error_code &e) {
     if (!m_driver->isOpen()) {
         return;
     }
+    if (m_write_updated) {
+        m_driver->write(m_write_buffer);
+        m_driver->flushOutput();
+        m_write_updated = false;
+    }
+    restart_write();
+}
 
-    m_driver->write(m_write_buffer);
-    m_driver->flushOutput();
-    start();
+void rov::hardware_io::restart_read() {
+    m_recvieve_timer.expires_from_now(boost::posix_time::milliseconds(20));
+    m_recvieve_timer.async_wait(boost::bind(&hardware_io::read_driver, this, boost::asio::placeholders::error));
+}
+
+void rov::hardware_io::restart_write() {
+    m_transmit_timer.expires_from_now(boost::posix_time::milliseconds(10));
+    m_transmit_timer.async_wait(boost::bind(&hardware_io::write_driver, this, boost::asio::placeholders::error));
 }

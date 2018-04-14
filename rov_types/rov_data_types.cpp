@@ -164,6 +164,7 @@ rov_types::serializable::error_code rov_types::rov_hardware_firmware::deserializ
     return success;
 }
 
+
 void rov_types::rov_hardware_telimetry::data_serialize(rov_types::binary_stream &bs) {
     bs << depth;
     bs << mega_communication;
@@ -177,6 +178,9 @@ void rov_types::rov_hardware_telimetry::data_serialize(rov_types::binary_stream 
     }
     bs << magnet;
     bs << acoustic;
+    for (auto & b : twisting_motors) {
+        bs << b;
+    }
 }
 
 void rov_types::rov_hardware_telimetry::data_deserialize(rov_types::binary_stream &bs) {
@@ -192,6 +196,9 @@ void rov_types::rov_hardware_telimetry::data_deserialize(rov_types::binary_strea
     }
     bs >> magnet;
     bs >> acoustic;
+    for (auto & b : twisting_motors) {
+        bs >> b;
+    }
 }
 
 void rov_types::rov_mini_telimetry::data_serialize(rov_types::binary_stream &bs) {
