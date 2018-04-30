@@ -35,19 +35,37 @@ namespace rov {
         using namespace rov_types;
         m_packet_handler[rov_control::meta().packet_id] =
                 std::bind(&connectivity_logic::on_receive_control, this, std::placeholders::_1);
+
+        m_packet_handler[rov_debug::meta().packet_id] =
+                std::bind(&connectivity_logic::on_receive_debug, this, std::placeholders::_1);
+
+        m_packet_handler[rov_hardware_firmware::meta().packet_id] =
+                std::bind(&connectivity_logic::on_receive_firmware, this, std::placeholders::_1);
+
+        m_packet_handler[rov_pd::meta().packet_id] =
+                std::bind(&connectivity_logic::on_receive_pd, this, std::placeholders::_1);
+
+        m_packet_handler[rov_enable_pd::meta().packet_id] =
+                std::bind(&connectivity_logic::on_receive_enable_pd, this, std::placeholders::_1);
     }
 
 
     void connectivity_logic::packet_handling(const std::vector<std::uint8_t> &packet) {
         try {
             using namespace rov_types;
-            //std::cout << "packet handling with id " << (int)packet[0] << " " << packet.size() << std::endl;
-            serializable::error_code err = m_packet_handler[packet[0]](packet);
-            if (err == serializable::error_code::success_size_greater){
-                std::cout << "serializable::error_code::success_size_greater" << std::endl;
-//                auto next = packet;
-//                next.erase(next.begin(), next.begin() + m_size_last_packet);
-//                packet_handling(next);
+            int i = 0;
+            auto decoding = packet;
+
+            while (i != decoding.size()) {
+                if (m_packet_handler.find(decoding[i]) != m_packet_handler.end()) {
+                    serializable::error_code err = m_packet_handler[decoding[i]](decoding);
+                    decoding.erase(decoding.begin(), decoding.begin() + m_size_last_packet );
+                    i = 0;
+                    continue;
+                }
+
+                std::cout << i << std::endl;
+                i++;
             }
 
         } catch (std::bad_function_call &e){
@@ -74,9 +92,11 @@ namespace rov {
         rov_types::rov_control rc;
         rov_types::serializable::error_code err = rc.deserialize(packet);
         if (rov_types::serializable::check_for_success(err)) {
-            //std::cout << (int)rc.axis_x << " " <<  (int)rc.axis_y << " " <<  (int)rc.axis_z << " " << (int)rc.axis_w << std::endl;
+            m_size_last_packet = rov_types::rov_control::meta().packet_size;
             post(event_t::make_event_ptr(event_type::rov_control_received, rc));
+
         }
+
         return err;
     }
 
@@ -85,5 +105,53 @@ namespace rov {
         m_service->write(message_io_types::create_msg_io<message_io_types::connectivity>(
                 telimetry.serialize()));
     }
+
+    rov_types::serializable::error_code connectivity_logic::on_receive_debug(const std::vector<std::uint8_t> &packet) {
+        rov_types::rov_debug rd;
+        auto err = rd.deserialize(packet);
+        if (rov_types::serializable::check_for_success(err)) {
+            m_size_last_packet = rov_types::rov_debug::meta().packet_size;
+            post(event_t::make_event_ptr(event_type::rov_debug_received, rd));
+
+        }
+        return err;
+    }
+
+    rov_types::serializable::error_code
+    connectivity_logic::on_receive_firmware(const std::vector<std::uint8_t> &packet) {
+        rov_types::rov_hardware_firmware firmware;
+        auto err = firmware.deserialize(packet);
+        if (rov_types::serializable::check_for_success(err)) {
+            m_size_last_packet = rov_types::rov_hardware_firmware::meta().packet_size + (uint16_t)firmware.size;
+            post(event_t::make_event_ptr(event_type::rov_firmware_received, firmware));
+        }
+        return err;
+    }
+
+    rov_types::serializable::error_code
+    connectivity_logic::on_receive_enable_pd(const std::vector<std::uint8_t> &packet) {
+        rov_types::rov_enable_pd enable_pd;
+        auto err = enable_pd.deserialize(packet);
+        std::cout << rov_types::serializable::error_to_string(err) << std::endl;
+        if (rov_types::serializable::check_for_success(err)) {
+            m_size_last_packet = rov_types::rov_enable_pd::meta().packet_size;
+            post(event_t::make_event_ptr(event_type::rov_enable_pd, enable_pd));
+            std::cout << "enable pd recieved" <<std::endl;
+        }
+
+        return err;
+    }
+
+    rov_types::serializable::error_code connectivity_logic::on_receive_pd(const std::vector<std::uint8_t> &packet) {
+        rov_types::rov_pd pd;
+        auto err = pd.deserialize(packet);
+        if (rov_types::serializable::check_for_success(err)) {
+            m_size_last_packet = rov_types::rov_pd::meta().packet_size;
+            post(event_t::make_event_ptr(event_type::rov_pd, pd));
+            std::cout << "pd recieved" <<std::endl;
+        }
+        return err;
+    }
+
 
 };

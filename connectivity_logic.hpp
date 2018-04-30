@@ -25,12 +25,18 @@ namespace rov {
 
         void init_message_mapping();
 
-        rov_types::serializable::error_code on_receive_control(const std::vector<std::uint8_t> & packet);
+
 
         void packet_handling(const std::vector<std::uint8_t> &packet);
 
         std::map<uint8_t, std::function<rov_types::serializable::error_code(const std::vector<std::uint8_t>)>> m_packet_handler;
-        std::uint8_t m_size_last_packet;
+        std::uint16_t m_size_last_packet;
+
+        rov_types::serializable::error_code on_receive_control(const std::vector<std::uint8_t> & packet);
+        rov_types::serializable::error_code on_receive_debug(const std::vector<std::uint8_t> & packet);
+        rov_types::serializable::error_code on_receive_firmware(const std::vector<std::uint8_t> & packet);
+        rov_types::serializable::error_code on_receive_enable_pd(const std::vector<std::uint8_t> & packet);
+        rov_types::serializable::error_code on_receive_pd(const std::vector<std::uint8_t> & packet);
     };
 }
 

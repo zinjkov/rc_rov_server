@@ -62,6 +62,6 @@ void rov::connectivity_io::stop() {
 }
 
 void rov::connectivity_io::on_disconnect(rov::session *ptr) {
-    m_sessions.erase(ptr->get_id());
     std::cout << "client with id: " << ptr->get_id() << " disconnected" << std::endl;
+    m_sessions.erase(ptr->get_id());
 }
