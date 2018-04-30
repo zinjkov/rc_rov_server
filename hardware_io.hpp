@@ -39,6 +39,8 @@ namespace rov {
         void restart_write();
         void restart_read();
 
+        void restart_wr();
+
     };
 }
 

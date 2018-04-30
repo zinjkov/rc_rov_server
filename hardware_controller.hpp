@@ -18,8 +18,15 @@ namespace rov {
         void on_read(const message_io &msg) override final;
     private:
         void subscribe_to_event();
+
         void on_telimetry_updated(const event_ptr &event);
         void on_control_updated(const event_ptr &event);
+
+        void on_pd_updated(const event_ptr &event);
+        void on_enable_pd_updated(const event_ptr &event);
+
+        void on_debug(const event_ptr &event);
+        void on_firmware_updated(const event_ptr &event);
 
         void emit_control();
         void update_config();
@@ -27,11 +34,12 @@ namespace rov {
 
         rov_types::serializable::error_code on_hardware_telimetry(const std::vector<std::uint8_t> &packet);
 
+
         rov_types::rov_control m_control;
         rov_types::rov_telimetry m_telimetry;
         regulator_sequence m_regulators;
         basic_regulator::regulator_config m_config;
-
+        bool m_flashing;
         std::map<uint8_t, std::function<rov_types::serializable::error_code (const std::vector<std::uint8_t>)>> m_packet_handler;
     };
 }

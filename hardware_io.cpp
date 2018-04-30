@@ -15,7 +15,7 @@ inline void sleepFor(long long int time) {
 
 rov::hardware_io::hardware_io(const rov::io_service_ptr &service) :
         service_io(service),
-        m_driver(std::make_shared<serial::Serial>("/dev/ttyACM0", 115200,
+        m_driver(std::make_shared<serial::Serial>("/dev/ttyUSB0", 115200,
                                                   serial::Timeout(serial::Timeout::simpleTimeout(10)))),
         m_transmit_timer(*service),
         m_recvieve_timer(*service),
@@ -23,6 +23,7 @@ rov::hardware_io::hardware_io(const rov::io_service_ptr &service) :
 {
     sleepFor(1000);
     start();
+    restart_wr();
 }
 
 rov::hardware_io::~hardware_io() {
@@ -38,11 +39,15 @@ void rov::hardware_io::write(const rov::message_io &write_data) {
 }
 
 void rov::hardware_io::start() {
-    restart_read();
-    restart_write();
+    if (!m_driver->isOpen()) {
+        m_driver->open();
+        sleepFor(1000);
+
+    }
 }
 
 void rov::hardware_io::stop() {
+    m_driver->close();
     m_transmit_timer.cancel();
     m_recvieve_timer.cancel();
 }
@@ -100,4 +105,9 @@ void rov::hardware_io::restart_read() {
 void rov::hardware_io::restart_write() {
     m_transmit_timer.expires_from_now(boost::posix_time::milliseconds(10));
     m_transmit_timer.async_wait(boost::bind(&hardware_io::write_driver, this, boost::asio::placeholders::error));
+}
+
+void rov::hardware_io::restart_wr() {
+    restart_read();
+    restart_write();
 }
