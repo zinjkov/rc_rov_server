@@ -22,9 +22,19 @@ namespace rov {
         void on_imu_updated(const rov::event_ptr &event);
         void on_hardware_telimetry_updated(const rov::event_ptr &event);
 
+        void on_pd_updated(const rov::event_ptr &event);
+        void on_enable_pd_updated(const rov::event_ptr &event);
+
+        void load_pd();
+        void save_pd();
+
+        void load_enabled_pd();
+        void save_enabled_pd();
+
         rov_types::rov_control m_control;
         rov_types::rov_telimetry m_telimetry;
-
+        rov_types::rov_pd m_pd;
+        rov_types::rov_enable_pd m_enabled_pd;
     };
 }
 
