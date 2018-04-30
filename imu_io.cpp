@@ -11,7 +11,7 @@
 
 rov::imu_io::imu_io(const rov::io_service_ptr &service) :
     service_io(service),
-    m_driver(std::make_shared<posix_serial>("/dev/ttyUSB0")),
+    m_driver(std::make_shared<posix_serial>("/dev/ttyS1")),
     m_transmit_timer(*service)
 {
 
