@@ -14,7 +14,17 @@ namespace rov {
             imu_data_recieved,
 
             connectivity_transmit_request,
+
             rov_control_received,
+            rov_debug_received,
+            rov_firmware_received,
+
+            rov_enable_pd,
+            rov_pd,
+
+            rov_pd_updated,
+            rov_pd_enable_updated,
+
 
             telimetry_updated,
             hardware_telemetry_updated
