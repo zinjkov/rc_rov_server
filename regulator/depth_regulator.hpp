@@ -17,7 +17,8 @@ public:
                const rov_types::rov_telimetry &rt,
                const regulator_config &config) override final;
 
-
+private:
+    float m_depth_to_set;
 };
 }
 

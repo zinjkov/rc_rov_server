@@ -17,6 +17,8 @@ namespace rov {
                    const rov_types::rov_control &rc,
                    const rov_types::rov_telimetry &rt,
                    const basic_regulator::regulator_config &config) override final;
+    private:
+        float m_yaw_to_set;
     };
 }
 

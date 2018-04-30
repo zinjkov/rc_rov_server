@@ -7,6 +7,7 @@
 
 #include "basic_regulator.hpp"
 #include <memory>
+#include <list>
 namespace rov {
     class regulator_sequence {
     public:
@@ -15,12 +16,45 @@ namespace rov {
 
         template <class regulator_type>
         void add_verctical_regulator() {
+            regulator_type r;
+            for (auto &reg : m_vetical_sequence) {
+                if (r.get_id() == reg->get_id()) {
+                    return;
+                }
+            }
             m_vetical_sequence.push_back(make_regulator<regulator_type>());
         }
 
         template <class regulator_type>
         void add_horizontal_regulator() {
+            regulator_type r;
+            for (auto &reg : m_horizontal_sequence) {
+                if (r.get_id() == reg->get_id()) {
+                    return;
+                }
+            }
             m_horizontal_sequence.push_back(make_regulator<regulator_type>());
+        }
+
+        template <class regulator_type>
+        void remove_verctical_regulator() {
+            regulator_type r;
+            for (auto &reg : m_vetical_sequence) {
+                if (r.get_id() == reg->get_id()) {
+                    m_vetical_sequence.remove(reg);
+                }
+            }
+
+        }
+
+        template <class regulator_type>
+        void remove_horizontal_regulator() {
+            regulator_type r;
+            for (auto &reg : m_horizontal_sequence) {
+                if (r.get_id() == reg->get_id()) {
+                    m_horizontal_sequence.remove(reg);
+                }
+            }
         }
 
         void apply_horizontal(rov_types::rov_hardware_control &thruster,
@@ -35,8 +69,8 @@ namespace rov {
 
 
     private:
-        std::vector<std::shared_ptr<basic_regulator>> m_horizontal_sequence;
-        std::vector<std::shared_ptr<basic_regulator>> m_vetical_sequence;
+        std::list<std::shared_ptr<basic_regulator>> m_horizontal_sequence;
+        std::list<std::shared_ptr<basic_regulator>> m_vetical_sequence;
 
         template <class regulator_type>
         std::shared_ptr<basic_regulator> make_regulator(){
