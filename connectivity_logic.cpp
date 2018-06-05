@@ -59,12 +59,12 @@ namespace rov {
             while (i != decoding.size()) {
                 if (m_packet_handler.find(decoding[i]) != m_packet_handler.end()) {
                     serializable::error_code err = m_packet_handler[decoding[i]](decoding);
-                    decoding.erase(decoding.begin(), decoding.begin() + m_size_last_packet );
-                    i = 0;
-                    continue;
+                    if (serializable::check_for_success(err)) {
+                        decoding.erase(decoding.begin(), decoding.begin() + m_size_last_packet);
+                        i = 0;
+                        continue;
+                    }
                 }
-
-                std::cout << i << std::endl;
                 i++;
             }
 

@@ -12,7 +12,7 @@ class depth_regulator : public basic_regulator {
 public:
     depth_regulator();
     virtual ~depth_regulator();
-    void apply(rov_types::rov_hardware_control &thruster,
+    void apply(std::vector<int8_t> &force,
                const rov_types::rov_control &rc,
                const rov_types::rov_telimetry &rt,
                const regulator_config &config) override final;

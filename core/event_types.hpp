@@ -27,7 +27,13 @@ namespace rov {
 
 
             telimetry_updated,
-            hardware_telemetry_updated
+            hardware_telemetry_updated,
+
+            camera_one_frame_updated,
+            camera_one_config,
+
+            leo_telimetry_updated,
+            leo_control_updated
         };
     };
 

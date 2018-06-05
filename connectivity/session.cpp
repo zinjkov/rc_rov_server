@@ -10,21 +10,30 @@ rov::session::session(std::size_t session_id,const std::shared_ptr<boost::asio::
     m_io_serice(io_service_),
     m_socket(std::make_shared<boost::asio::ip::tcp::socket>(*io_service_)),
     m_update_timer(*io_service_),
-    m_buffer(1024)
+    m_buffer(1024),
+    is_diconnected(false)
 {
 
 }
 
 void rov::session::handle_write(const boost::system::error_code &ec) {
     if (ec) {
-        m_on_disconnect(this);
+        if (!is_diconnected) {
+            is_diconnected = true;
+            m_socket->cancel();
+            m_on_disconnect(this);
+        }
     }
 }
 
 
 void rov::session::handle_read(const boost::system::error_code &error, size_t bytes_transferred) {
     if (error) {
-        m_on_disconnect(this);
+        if (!is_diconnected) {
+            is_diconnected = true;
+            m_socket->cancel();
+            m_on_disconnect(this);
+        }
         return;
     }
 

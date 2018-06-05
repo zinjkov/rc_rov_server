@@ -18,9 +18,11 @@ namespace rov {
 
     private:
         void subscribe_to_event();
+
         void on_control_updated(const rov::event_ptr &event);
         void on_imu_updated(const rov::event_ptr &event);
         void on_hardware_telimetry_updated(const rov::event_ptr &event);
+        void on_leo_telimetry_updated(const rov::event_ptr &event);
 
         void on_pd_updated(const rov::event_ptr &event);
         void on_enable_pd_updated(const rov::event_ptr &event);

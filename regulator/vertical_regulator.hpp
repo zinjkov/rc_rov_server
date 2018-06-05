@@ -15,8 +15,11 @@ namespace rov {
         void apply(rov_types::rov_hardware_control &thruster,
                    const rov_types::rov_control &rc,
                    const rov_types::rov_telimetry &rt,
-                   const regulator_config &config) override final;
-
+                   const regulator_config &config) ;
+        void apply(std::vector<int8_t> &force,
+                   const rov_types::rov_control &rc,
+                   const rov_types::rov_telimetry &rt,
+                   const regulator_config &config) override final {};
 
     };
 };

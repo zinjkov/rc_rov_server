@@ -16,7 +16,7 @@ namespace rov {
         service_logic(const std::shared_ptr<service_io> &driver_);
 
         virtual ~service_logic();
-
+        const std::shared_ptr<service_io> get_asio();
         virtual void on_read(const message_io &msg) = 0;
 
     protected:

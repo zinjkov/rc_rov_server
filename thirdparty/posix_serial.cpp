@@ -36,7 +36,7 @@ bool posix_serial::serial_open(const std::string &device_port) {
         return false;
     }
 
-    if(fcntl(m_fd, F_SETFL, 0)<0)
+    if(fcntl(m_fd, F_SETFL, 0) < 0)
     {
         printf("fcntl failed\n");
         return false;
@@ -46,7 +46,7 @@ bool posix_serial::serial_open(const std::string &device_port) {
         fcntl(m_fd, F_SETFL, 0);
     }
 
-    if(isatty(STDIN_FILENO)==0)
+    if(isatty(STDIN_FILENO) == 0)
     {
         printf("standard input is not a terminal device\n");
         return false;
@@ -56,7 +56,7 @@ bool posix_serial::serial_open(const std::string &device_port) {
         printf("isatty success!\n");
     }
 
-    bzero(&options,sizeof(options));
+    bzero(&options, sizeof(options));
 
     options.c_cflag = B115200 | CS8 | CLOCAL |CREAD;
     options.c_iflag = IGNPAR;
@@ -88,7 +88,9 @@ std::size_t posix_serial::read_bytes(std::vector<uint8_t> &bytes) {
     if (bytes.size() == 0) {
         bytes.resize(1024);
     }
+
     ssize_t received_bytes = read(m_fd, bytes.data(), bytes.size());
+
     if (received_bytes != -1) {
         bytes.resize(static_cast<std::size_t>(received_bytes));
     } else {

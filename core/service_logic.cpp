@@ -11,3 +11,7 @@ rov::service_logic::service_logic(const std::shared_ptr<service_io> &service) : 
 rov::service_logic::~service_logic() {
 
 }
+
+const std::shared_ptr<rov::service_io> rov::service_logic::get_asio() {
+    return m_service;
+}

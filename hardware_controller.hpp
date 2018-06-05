@@ -29,7 +29,7 @@ namespace rov {
         void on_firmware_updated(const event_ptr &event);
 
         void emit_control();
-        void update_config();
+
         void init_packet_handler();
 
         rov_types::serializable::error_code on_hardware_telimetry(const std::vector<std::uint8_t> &packet);

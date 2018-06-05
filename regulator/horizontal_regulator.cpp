@@ -26,10 +26,9 @@ void rov::horizontal_regulator::apply(rov_types::rov_hardware_control &thruster,
                                       const rov_types::rov_telimetry &rt,
                                       const rov::basic_regulator::regulator_config &config) {
 
-    thruster.horizontal_power[0] = constrain75(rc.axis_y + rc.axis_y + rc.axis_w);
-    thruster.horizontal_power[1] = constrain75(rc.axis_y - rc.axis_y - rc.axis_w);
-    thruster.horizontal_power[2] = constrain75(rc.axis_y - rc.axis_y + rc.axis_w);
-    thruster.horizontal_power[3] = constrain75(rc.axis_y + rc.axis_y - rc.axis_w);
-    constrain_horizontal(thruster);
+    thruster.horizontal_power[0] = constrain(rc.axis_y + rc.axis_x + rc.axis_w);
+    thruster.horizontal_power[1] = constrain(rc.axis_y - rc.axis_x - rc.axis_w);
+    thruster.horizontal_power[2] = constrain(rc.axis_y - rc.axis_x + rc.axis_w);
+    thruster.horizontal_power[3] = constrain(rc.axis_y + rc.axis_x - rc.axis_w);
 }
 

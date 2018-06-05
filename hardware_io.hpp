@@ -8,12 +8,13 @@
 #include "core/service_io.hpp"
 #include <serial/serial.h>
 #include <boost/asio/deadline_timer.hpp>
+#include <mutex>
 
 namespace rov {
     class hardware_io : public service_io {
     public:
 
-        hardware_io(const io_service_ptr &service);
+        hardware_io(const std::string& port, const io_service_ptr &service);
 
         virtual ~hardware_io();
 
@@ -29,14 +30,14 @@ namespace rov {
 
     private:
         std::shared_ptr<serial::Serial> m_driver;
-        boost::asio::deadline_timer m_transmit_timer;
+        std::mutex m_driver_guard;
         boost::asio::deadline_timer m_recvieve_timer;
         std::vector<std::uint8_t> m_write_buffer;
         bool m_write_updated;
 
         void read_driver(const boost::system::error_code &e);
-        void write_driver(const boost::system::error_code &e);
-        void restart_write();
+        void write_driver();
+
         void restart_read();
 
         void restart_wr();

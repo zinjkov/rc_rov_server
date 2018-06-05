@@ -72,6 +72,8 @@ namespace rov {
         std::list<std::shared_ptr<basic_regulator>> m_horizontal_sequence;
         std::list<std::shared_ptr<basic_regulator>> m_vetical_sequence;
 
+        int8_t calc_diff(std::vector<int8_t> &force, int8_t *thrusters);
+
         template <class regulator_type>
         std::shared_ptr<basic_regulator> make_regulator(){
             return std::make_shared<regulator_type>();

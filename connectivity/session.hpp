@@ -33,7 +33,7 @@ namespace rov {
         std::shared_ptr<boost::asio::ip::tcp::socket> m_socket;
         boost::asio::deadline_timer m_update_timer;
         std::vector<std::uint8_t> m_buffer;
-
+        bool is_diconnected;
         std::function<void(session *)> m_on_disconnect;
         std::function<void(const std::vector<std::uint8_t> &)> m_on_read;
 

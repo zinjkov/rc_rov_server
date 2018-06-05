@@ -2,20 +2,17 @@
 // Created by zinjkov on 01.04.18.
 //
 
+#include <cmath>
 #include "basic_regulator.hpp"
 namespace rov {
     basic_regulator::basic_regulator(std::uint8_t id) : m_id(id), m_prev_error(0) {
-
+        m_timer.start();
     }
 
     basic_regulator::~basic_regulator() {
 
     }
 
-    void basic_regulator::constrain_thruster(rov_types::rov_hardware_control &thruster) {
-        constrain_horizontal(thruster);
-        constrain_vertical(thruster);
-    }
 
     std::int8_t basic_regulator::constrain(int p) {
         if (p > 100) p = 100;
@@ -23,17 +20,6 @@ namespace rov {
         return static_cast<std::int8_t >(p);
     }
 
-    void basic_regulator::constrain_horizontal(rov_types::rov_hardware_control &thruster) {
-        for (auto &p : thruster.horizontal_power) {
-            p = constrain(p);
-        }
-    }
-
-    void basic_regulator::constrain_vertical(rov_types::rov_hardware_control &thruster) {
-        for (auto &p : thruster.vertical_power) {
-            p = constrain(p);
-        }
-    }
 
     std::uint8_t basic_regulator::get_id() const {
         return m_id;
@@ -43,17 +29,20 @@ namespace rov {
         return get_id() == regualtor.get_id();
     }
 
-    std::int8_t basic_regulator::constrain75(int p) {
-        int val = 75;
-        if (p > val) p = val;
-        if (p < -val) p = -val;
-        return static_cast<std::int8_t >(p);
-
-    }
 
     std::int8_t basic_regulator::diff_strategy(float kd, float error) {
-        int to_ret = static_cast<int>(kd * (m_prev_error - error));
+        float last_update = m_timer.elapsed() / (float)1000;
+        int to_ret = static_cast<int>(kd * ((m_prev_error - error) / (last_update)));
         m_prev_error = error;
+        return constrain(to_ret);
+    }
+    std::int8_t basic_regulator::int_strategy(float ki, float error) {
+        float last_update = m_timer.elapsed() / (float)1000;
+        int to_ret = static_cast<int>(ki *  error * last_update + m_prev_integral);
+        m_prev_integral = to_ret;
+        if (m_prev_error * error < 0) {
+            m_prev_integral = 0;
+        }
         return constrain(to_ret);
     }
 
@@ -62,10 +51,25 @@ namespace rov {
         return constrain(to_ret);
     }
 
-    std::int8_t basic_regulator::pd_strategy(float kp, float kd, float error) {
-        auto to_ret = prop_strategy(kp, error) + diff_strategy(kd, error);
+    std::int8_t basic_regulator::pid_strategy(float p, float i, float d, float error) {
+        std::cout << p << i << d << std::endl;
+        auto to_ret = prop_strategy(p, error) + int_strategy(i, error) + diff_strategy(d, error);
+        m_timer.restart();
         return constrain(to_ret);
     }
+
+
+    int basic_regulator::constrainto(int p, int v) {
+        if (p > v) {
+            p = v;
+        }
+        if (p < -v) {
+            p = -v;
+        }
+        return p;
+    }
+
+
 
 
     float to360(float angle) {

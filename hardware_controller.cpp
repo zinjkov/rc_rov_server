@@ -14,7 +14,8 @@ rov::hardware_controller::hardware_controller(const std::shared_ptr<rov::service
 
     m_regulators.add_verctical_regulator<vertical_regulator>();
     m_regulators.add_verctical_regulator<depth_regulator>();
-    m_regulators.add_verctical_regulator<pitch_roll_regulator>();
+    m_regulators.add_verctical_regulator<pitch_regulator>();
+    m_regulators.add_verctical_regulator<roll_regulator>();
 
     m_service->register_on_read_handler(std::bind(&hardware_controller::on_read, this, std::placeholders::_1));
 
@@ -55,7 +56,8 @@ void rov::hardware_controller::subscribe_to_event() {
 
 void rov::hardware_controller::on_telimetry_updated(const rov::event_ptr &event) {
     m_telimetry = event->get<rov_types::rov_telimetry>();
-    //emit_control();
+
+    emit_control();
 }
 
 void rov::hardware_controller::on_control_updated(const rov::event_ptr &event) {
@@ -66,7 +68,7 @@ void rov::hardware_controller::on_control_updated(const rov::event_ptr &event) {
 void rov::hardware_controller::emit_control() {
     rov_types::rov_hardware_control rhc;
 
-    update_config();
+//    update_config();
 
     m_regulators.apply_horizontal(rhc, m_control, m_telimetry, m_config);
     m_regulators.apply_vertical(rhc, m_control, m_telimetry, m_config);
@@ -76,7 +78,6 @@ void rov::hardware_controller::emit_control() {
     for(int i = 0; i < 2; i++) {
         rhc.camera_rotate[i] = m_control.camera_rotate[i];
     }
-    rhc.acoustic = m_control.acoustic;
     rhc.magnet = m_control.magnet;
 
     for (int i = 0; i < 4; i++) {
@@ -86,17 +87,6 @@ void rov::hardware_controller::emit_control() {
     m_service->write(message_io_types::create_msg_io<message_io_types::hardware>(rhc.serialize()));
 }
 
-void rov::hardware_controller::update_config() {
-    static bool first_axis_w = true;
-    if (m_control.axis_w == 0) {
-        if (first_axis_w) {
-            m_config.yaw_to_set = m_telimetry.yaw;
-            first_axis_w = false;
-        }
-    } else {
-        first_axis_w = true;
-    }
-}
 
 void rov::hardware_controller::on_read(const rov::message_io &msg) {
 
@@ -105,7 +95,7 @@ void rov::hardware_controller::on_read(const rov::message_io &msg) {
     try {
        // std::cout << std::hex << 0x2A << " " << (int)m[0] << std::endl;
         if (m_packet_handler.find(m[0]) != m_packet_handler.end()){
-            auto err = m_packet_handler.at(m[0])(m);
+            m_packet_handler.at(m[0])(m);
         }
 
     }catch(std::exception &e){

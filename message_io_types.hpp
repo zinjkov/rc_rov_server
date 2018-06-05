@@ -8,6 +8,7 @@
 #include <vector>
 #include <cstdint>
 #include "core/service_io.hpp"
+#include <opencv2/opencv.hpp>
 
 namespace rov {
     namespace  message_io_types {
@@ -41,7 +42,15 @@ namespace rov {
 
         using hardware = base_message<std::vector<std::uint8_t>>;
 
+        struct camera_frame {
+            cv::Mat frame;
+        };
 
+        using camera = base_message<cv::Mat>;
+
+        using camera_config = base_message<std::string>;
+
+        using websocket = base_message<std::string>;
     }
 }
 

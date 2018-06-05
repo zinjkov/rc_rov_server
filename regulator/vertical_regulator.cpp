@@ -16,8 +16,8 @@ void rov::vertical_regulator::apply(rov_types::rov_hardware_control &thruster, c
                                     const rov_types::rov_telimetry &rt,
                                     const rov::basic_regulator::regulator_config &config) {
 
-    thruster.vertical_power[0] = constrain75(rc.axis_z);
-    thruster.vertical_power[1] = constrain75(rc.axis_z);
-    thruster.vertical_power[2] = constrain75(rc.axis_z);
-    thruster.vertical_power[3] = constrain75(rc.axis_z);
+    thruster.vertical_power[0] = constrain(rc.axis_z);
+    thruster.vertical_power[1] = constrain(rc.axis_z);
+    thruster.vertical_power[2] = constrain(rc.axis_z);
+    thruster.vertical_power[3] = constrain(rc.axis_z);
 }
