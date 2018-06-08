@@ -25,15 +25,18 @@ namespace rov {
             rov_pd_updated,
             rov_pd_enable_updated,
 
-
             telimetry_updated,
             hardware_telemetry_updated,
 
             camera_one_frame_updated,
-            camera_one_config,
+            camera_set_config,
+            camera_get_config,
 
             leo_telimetry_updated,
-            leo_control_updated
+            leo_control_updated,
+
+            obs_command,
+            obs_data
         };
     };
 

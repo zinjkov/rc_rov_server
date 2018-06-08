@@ -33,7 +33,7 @@ namespace rov_types {
 
     void binary_stream::change_byte_ordering(binary_stream::byte_ordering ordering) {
         if (m_ordering != ordering) {
-            for (int i = 0; i < m_data.size(); i++) {
+            for (size_t i = 0; i < m_data.size(); i++) {
 //                m_data[i] = swap_endian<int16_t>(m_data[i]);
             }
             m_ordering = ordering;

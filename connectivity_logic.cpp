@@ -53,7 +53,7 @@ namespace rov {
     void connectivity_logic::packet_handling(const std::vector<std::uint8_t> &packet) {
         try {
             using namespace rov_types;
-            int i = 0;
+            size_t i = 0;
             auto decoding = packet;
 
             while (i != decoding.size()) {

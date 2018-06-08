@@ -33,7 +33,7 @@ void rov::websocket_logic::on_image_updated(const rov::event_ptr &ev) {
     std::vector<uchar> encoded;
     std::vector<int> params(2);
     params[0] = cv::IMWRITE_JPEG_QUALITY;
-    params[1] = 50;
+    params[1] = 75;
     cv::imencode(".jpg", ev->get<cv::Mat>(), encoded, params);
 
     std::string out(encoded.size(), 0);

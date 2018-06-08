@@ -21,18 +21,18 @@ void rov::optical_flow::subscribe_to_event() {
 
 #include "regulator/timer.hpp"
 
-static void drawOptFlowMap(const cv::Mat& flow, cv::Mat& cflowmap, int step,
-                           double, const cv::Scalar& color)
-{
-    for(int y = 0; y < cflowmap.rows; y += step)
-        for(int x = 0; x < cflowmap.cols; x += step)
-        {
-            const cv::Point2f& fxy = flow.at<cv::Point2f>(y, x);
-            cv::line(cflowmap, cv::Point(x,y), cv::Point(cvRound(x+fxy.x), cvRound(y+fxy.y)),
-                 color);
-            cv::circle(cflowmap, cv::Point(x,y), 2, color, -1);
-        }
-}
+//static void drawOptFlowMap(const cv::Mat& flow, cv::Mat& cflowmap, int step,
+//                           double, const cv::Scalar& color)
+//{
+//    for(int y = 0; y < cflowmap.rows; y += step)
+//        for(int x = 0; x < cflowmap.cols; x += step)
+//        {
+//            const cv::Point2f& fxy = flow.at<cv::Point2f>(y, x);
+//            cv::line(cflowmap, cv::Point(x,y), cv::Point(cvRound(x+fxy.x), cvRound(y+fxy.y)),
+//                 color);
+//            cv::circle(cflowmap, cv::Point(x,y), 2, color, -1);
+//        }
+//}
 
 void rov::optical_flow::on_frame_updated(const rov::event_ptr &e) {
 //    static std::mutex mutex;

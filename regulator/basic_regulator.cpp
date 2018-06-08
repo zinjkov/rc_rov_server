@@ -13,13 +13,11 @@ namespace rov {
 
     }
 
-
     std::int8_t basic_regulator::constrain(int p) {
         if (p > 100) p = 100;
         if (p < -100) p = -100;
         return static_cast<std::int8_t >(p);
     }
-
 
     std::uint8_t basic_regulator::get_id() const {
         return m_id;
@@ -29,16 +27,16 @@ namespace rov {
         return get_id() == regualtor.get_id();
     }
 
-
     std::int8_t basic_regulator::diff_strategy(float kd, float error) {
         float last_update = m_timer.elapsed() / (float)1000;
-        int to_ret = static_cast<int>(kd * ((m_prev_error - error) / (last_update)));
+        int to_ret = static_cast<int>(kd * (error - m_prev_error));
         m_prev_error = error;
         return constrain(to_ret);
     }
+
     std::int8_t basic_regulator::int_strategy(float ki, float error) {
         float last_update = m_timer.elapsed() / (float)1000;
-        int to_ret = static_cast<int>(ki *  error * last_update + m_prev_integral);
+        auto to_ret = static_cast<int>(ki *  error * last_update + m_prev_integral);
         m_prev_integral = to_ret;
         if (m_prev_error * error < 0) {
             m_prev_integral = 0;
@@ -47,7 +45,7 @@ namespace rov {
     }
 
     std::int8_t basic_regulator::prop_strategy(float kp, float error) {
-        int to_ret = static_cast<int>(kp * error);
+        auto to_ret = static_cast<int>(kp * error);
         return constrain(to_ret);
     }
 
@@ -58,7 +56,6 @@ namespace rov {
         return constrain(to_ret);
     }
 
-
     int basic_regulator::constrainto(int p, int v) {
         if (p > v) {
             p = v;
@@ -68,9 +65,6 @@ namespace rov {
         }
         return p;
     }
-
-
-
 
     float to360(float angle) {
         return angle > 0 ? angle : (360 + angle);
@@ -95,7 +89,6 @@ namespace rov {
         return angle;
 
     }
-
 
 }
 

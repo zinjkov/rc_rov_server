@@ -9,6 +9,7 @@
 #include <cstdint>
 #include "core/service_io.hpp"
 #include <opencv2/opencv.hpp>
+#include <nlohmann_json/json.hpp>
 
 namespace rov {
     namespace  message_io_types {
@@ -46,9 +47,9 @@ namespace rov {
             cv::Mat frame;
         };
 
-        using camera = base_message<cv::Mat>;
+        using camera = base_message<std::vector<uchar>>;
 
-        using camera_config = base_message<std::string>;
+        using camera_config = base_message<nlohmann::json>;
 
         using websocket = base_message<std::string>;
     }

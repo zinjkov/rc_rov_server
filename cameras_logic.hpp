@@ -16,8 +16,8 @@ namespace rov {
         virtual void on_read(const message_io &msg) override final;
 
     private:
-        void on_camera_config_recvied(const std::string &config);
-
+        void on_camera_config_recvied(const event_ptr &ev);
+        void subscribe_to_event();
     };
 }
 

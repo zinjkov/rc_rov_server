@@ -43,6 +43,10 @@ namespace rov {
 
         virtual bool is_connected() = 0;
 
+        inline io_service_ptr get_asio() const {
+            return m_io_service;
+        }
+
     protected:
         io_service_ptr m_io_service;
 

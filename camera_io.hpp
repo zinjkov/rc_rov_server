@@ -33,6 +33,13 @@ namespace rov {
         std::shared_ptr<cv::VideoCapture> m_cameras;
         int m_camera_idx;
         boost::asio::deadline_timer m_update_timer;
+        struct config {
+            int height = 600;
+            int width = 800;
+            int fps = 20;
+            int quality = 75;
+            int camera = 0;
+        } m_config;
     };
 }
 
