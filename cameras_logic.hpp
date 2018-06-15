@@ -5,6 +5,7 @@
 #ifndef RC_ROV_SERVER_CAMERAS_LOGIC_HPP
 #define RC_ROV_SERVER_CAMERAS_LOGIC_HPP
 
+#include <nlohmann_json/json.hpp>
 #include "core/service_logic.hpp"
 #include "core/eventable.hpp"
 namespace rov {
@@ -16,8 +17,12 @@ namespace rov {
         virtual void on_read(const message_io &msg) override final;
 
     private:
+        void save_config();
+        void load_config();
         void on_camera_config_recvied(const event_ptr &ev);
+        void on_camera_config_request(const event_ptr &ev);
         void subscribe_to_event();
+        nlohmann::json m_last_config;
     };
 }
 

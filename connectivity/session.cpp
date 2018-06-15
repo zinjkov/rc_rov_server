@@ -29,11 +29,6 @@ void rov::session::handle_write(const boost::system::error_code &ec) {
 
 void rov::session::handle_read(const boost::system::error_code &error, size_t bytes_transferred) {
     if (error) {
-        if (!is_diconnected) {
-            is_diconnected = true;
-            m_socket->cancel();
-            m_on_disconnect(this);
-        }
         return;
     }
 

@@ -47,7 +47,7 @@ namespace rov {
             cv::Mat frame;
         };
 
-        using camera = base_message<std::vector<uchar>>;
+        using camera = base_message<cv::Mat>;
 
         using camera_config = base_message<nlohmann::json>;
 

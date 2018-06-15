@@ -12,7 +12,7 @@ namespace rov {
         enum event_id : event_id_t {
             imu_config,
             imu_data_recieved,
-
+            info_transmit_request,
             connectivity_transmit_request,
 
             rov_control_received,

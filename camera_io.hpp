@@ -6,6 +6,7 @@
 #define RC_ROV_SERVER_CAMERA_IO_HPP
 
 #include <boost/asio/deadline_timer.hpp>
+#include <mutex>
 #include "core/service_io.hpp"
 #include "opencv2/opencv.hpp"
 
@@ -31,13 +32,14 @@ namespace rov {
         void update_frame(const boost::system::error_code &e);
     private:
         std::shared_ptr<cv::VideoCapture> m_cameras;
-        int m_camera_idx;
         boost::asio::deadline_timer m_update_timer;
+        bool is_open;
+        std::mutex m_camera_guard;
         struct config {
             int height = 600;
             int width = 800;
-            int fps = 20;
-            int quality = 75;
+            int fps = 30;
+            int quality = 50;
             int camera = 0;
         } m_config;
     };

@@ -33,7 +33,9 @@ void rov::esp_logic::subscribe_to_events() {
 
 void rov::esp_logic::on_transmit_request(const rov::event_ptr &ev)  {
     auto command = ev->get<std::string>();
+    std::cout << command << std::endl;
     command += "\r\n";
     std::vector<uint8_t> data(command.size());
+    std::copy(command.begin(), command.end(), data.begin());
     m_service->write(message_io_types::create_msg_io<message_io_types::hardware>(data));
 }

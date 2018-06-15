@@ -42,6 +42,8 @@ namespace rov {
 
         void restart_wr();
 
+        void restart();
+
     };
 }
 

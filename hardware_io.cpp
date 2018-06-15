@@ -62,14 +62,10 @@ void rov::hardware_io::read_driver(const boost::system::error_code &e) {
     std::vector<std::uint8_t> vec_to_ret;
 
     try {
-        if (!m_driver->isOpen()) {
-            return;
-        }
         m_driver->read(vec_to_ret, 1024);
     } catch (const std::exception &e) {
         std::cerr << e.what() << std::endl;
-        stop();
-        start();
+        restart();
     }
     if (!vec_to_ret.empty()){
         try {
@@ -93,17 +89,26 @@ void rov::hardware_io::write_driver() {
         }
     } catch (const std::exception &e) {
         std::cerr << e.what() << std::endl;
-        stop();
-        start();
+        restart();
     }
 
 }
 
 void rov::hardware_io::restart_read() {
-    m_recvieve_timer.expires_from_now(boost::posix_time::milliseconds(20));
+    m_recvieve_timer.expires_from_now(boost::posix_time::milliseconds(50));
     m_recvieve_timer.async_wait(boost::bind(&hardware_io::read_driver, this, boost::asio::placeholders::error));
 }
 
 void rov::hardware_io::restart_wr() {
     restart_read();
+}
+
+void rov::hardware_io::restart() {
+    try {
+        stop();
+        sleepFor(1000);
+        start();
+    } catch (const std::exception &e) {
+        std::cerr << "hardware_io::restart " << e.what() << std::endl;
+    }
 }

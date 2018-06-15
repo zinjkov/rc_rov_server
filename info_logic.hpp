@@ -19,6 +19,7 @@ private:
     void subscribe_to_events();
 
     void on_OBS_data_updated(const event_ptr &event);
+    void on_transmit_request(const event_ptr &event);
 };
 }
 

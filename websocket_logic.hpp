@@ -18,6 +18,9 @@ namespace rov {
     private:
         void subscribe_to_events();
         void on_image_updated(const event_ptr &ev);
+        void on_set_config(const event_ptr &ev);
+        int m_quality;
+        std::mutex m_guard;
     };
 }
 

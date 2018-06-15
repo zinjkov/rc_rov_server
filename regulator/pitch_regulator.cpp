@@ -23,9 +23,8 @@ void rov::pitch_regulator::apply(std::vector<int8_t> &force, const rov_types::ro
         float err = normilize360(pitch_to - pitch_real);
 
         err = to180(err);
-        std::cout << err << " " << pitch_real << " " << pitch_to << std::endl;
+
         std::int8_t z_pitch = pid_strategy(config.pd.pitch_p, config.pd.pitch_i, config.pd.pitch_d, err);
-        std::cout << "U: " << (int)z_pitch << std::endl;
         force[0] += -z_pitch;
         force[1] += z_pitch;
         force[2] += -z_pitch;

@@ -41,7 +41,11 @@ void rov::websocket_io::write(const rov::message_io &write_data) {
         connections_list::iterator i;
         std::string data = write_data.get<message_io_types::websocket>().get();
         for (i = m_connections.begin(); i != m_connections.end(); ++i) {
-            m_endpoint.send(*i, data, websocketpp::frame::opcode::binary);
+            try {
+                m_endpoint.send(*i, data, websocketpp::frame::opcode::binary);
+            } catch (const std::exception &e) {
+                std::cerr << "websocket_io::write " << e.what() << std::endl;
+            }
         }
     }
 }
@@ -97,7 +101,6 @@ void rov::websocket_io::on_close(rov::websocket_io::connection_hdl hdl) {
 
 void rov::websocket_io::on_read(rov::websocket_io::connection_hdl hdl, rov::websocket_io::message_ptr msg) {
     std::stringstream ss;
-    ss << "web_server_io::on_read called with " << hdl.lock().get();
     m_endpoint.get_alog().write(websocketpp::log::alevel::app, ss.str());
 
     std::string s = msg.get()->get_payload();

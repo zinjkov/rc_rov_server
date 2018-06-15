@@ -28,7 +28,6 @@ namespace rov {
     }
 
     std::int8_t basic_regulator::diff_strategy(float kd, float error) {
-        float last_update = m_timer.elapsed() / (float)1000;
         int to_ret = static_cast<int>(kd * (error - m_prev_error));
         m_prev_error = error;
         return constrain(to_ret);
@@ -50,7 +49,6 @@ namespace rov {
     }
 
     std::int8_t basic_regulator::pid_strategy(float p, float i, float d, float error) {
-        std::cout << p << i << d << std::endl;
         auto to_ret = prop_strategy(p, error) + int_strategy(i, error) + diff_strategy(d, error);
         m_timer.restart();
         return constrain(to_ret);

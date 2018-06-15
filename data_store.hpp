@@ -8,6 +8,7 @@
 #include "core/service_logic.hpp"
 #include "core/eventable.hpp"
 #include "rov_types/rov_data_types.hpp"
+#include "regulator/timer.hpp"
 
 namespace rov {
     class data_store : public eventable {
@@ -33,6 +34,9 @@ namespace rov {
         void load_enabled_pd();
         void save_enabled_pd();
 
+        void post_event_if_timeout();
+
+        timer m_timer;
         rov_types::rov_control m_control;
         rov_types::rov_telimetry m_telimetry;
         rov_types::rov_pd m_pd;

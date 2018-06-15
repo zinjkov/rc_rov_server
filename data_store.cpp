@@ -15,6 +15,7 @@ rov::data_store::data_store(const std::shared_ptr<rov::event_bus> &event_bus_) :
     load_pd();
 
     post(event_t::make_event_ptr(event_type::rov_pd_updated, m_pd));
+    m_timer.start();
 }
 
 
@@ -33,7 +34,7 @@ void rov::data_store::on_imu_updated(const rov::event_ptr &event) {
     m_telimetry.pitch = imu_data.pitch;
     m_telimetry.roll = imu_data.roll;
     m_telimetry.yaw = imu_data.yaw;
-    post(event_t::make_event_ptr(event_type::telimetry_updated, m_telimetry));
+    post_event_if_timeout();
 }
 
 void rov::data_store::subscribe_to_event() {
@@ -71,7 +72,7 @@ void rov::data_store::on_hardware_telimetry_updated(const rov::event_ptr &event)
 
     m_telimetry.magnet = hardware.magnet;
 
-    post(event_t::make_event_ptr(event_type::telimetry_updated, m_telimetry));
+    post_event_if_timeout();
 }
 
 void rov::data_store::on_pd_updated(const rov::event_ptr &event) {
@@ -207,6 +208,13 @@ void rov::data_store::on_leo_telimetry_updated(const rov::event_ptr &event) {
     m_telimetry.flashlight = rlt.flashlight;
     m_telimetry.esp_comm = rlt.esp_comm;
     m_telimetry.leo_comm = rlt.leo_comm;
-    post(event_t::make_event_ptr(event_type::telimetry_updated, m_telimetry));
+    post_event_if_timeout();
+}
+
+void rov::data_store::post_event_if_timeout() {
+    if (m_timer.elapsed() > 60UL) {
+        post(event_t::make_event_ptr(event_type::telimetry_updated, m_telimetry));
+        m_timer.start();
+    }
 }
 
